@@ -7,10 +7,16 @@ export default function EnquiryForm({
   listingId,
   listingTitle,
   propertyRef,
+  source = "listing_page",
+  heading = "Request details",
+  subtext = "Leave your details and we’ll get back to you about this property.",
 }: {
-  listingId: string;
-  listingTitle: string;
-  propertyRef: string;
+  listingId?: string;
+  listingTitle?: string;
+  propertyRef?: string;
+  source?: string;
+  heading?: string;
+  subtext?: string;
 }) {
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">(
     "idle"
@@ -25,14 +31,16 @@ export default function EnquiryForm({
     setState("sending");
     const supabase = createClient();
     const { error } = await supabase.from("enquiries").insert({
-      listing_id: listingId,
+      listing_id: listingId ?? null,
       name: form.name,
       phone: form.phone || null,
       email: form.email || null,
       message:
         form.message ||
-        `Enquiry about ${listingTitle} (Ref ${propertyRef}).`,
-      source: "listing_page",
+        (listingTitle
+          ? `Enquiry about ${listingTitle} (Ref ${propertyRef}).`
+          : "General enquiry."),
+      source,
     });
     setState(error ? "error" : "done");
   }
@@ -44,8 +52,8 @@ export default function EnquiryForm({
           Thanks — we’ve got it.
         </div>
         <p className="m-0 mt-1.5 text-[13.5px] text-[#4F5547]">
-          Our team will reach out about{" "}
-          <strong>{listingTitle}</strong> shortly.
+          Our team will reach out{listingTitle ? <> about <strong>{listingTitle}</strong></> : ""}{" "}
+          shortly.
         </p>
       </div>
     );
@@ -60,11 +68,9 @@ export default function EnquiryForm({
       className="mt-4 rounded-[20px] border border-line bg-white p-6"
     >
       <h3 className="m-0 mb-1 font-display text-[17px] font-extrabold text-[#13160F]">
-        Request details
+        {heading}
       </h3>
-      <p className="m-0 mb-4 text-[12.5px] text-muted">
-        Leave your details and we’ll get back to you about this property.
-      </p>
+      <p className="m-0 mb-4 text-[12.5px] text-muted">{subtext}</p>
       <div className="flex flex-col gap-2.5">
         <input
           required

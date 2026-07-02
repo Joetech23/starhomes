@@ -5,12 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { TEL_LINK, PHONE_DISPLAY, WA_GENERAL } from "@/lib/site";
 
-const NAV = [
-  { label: "Sale", type: "sale" },
-  { label: "Rent", type: "rent" },
-  { label: "Land", type: "land" },
-  { label: "Shortlets", type: "shortlet" },
-  { label: "Commercial", type: "commercial" },
+const NAV: { label: string; href: string }[] = [
+  { label: "Sale", href: "/properties?type=sale" },
+  { label: "Rent", href: "/properties?type=rent" },
+  { label: "Land", href: "/properties?type=land" },
+  { label: "Shortlets", href: "/properties?type=shortlet" },
+  { label: "Interiors", href: "/interior-design" },
+  { label: "Book Inspection", href: "/book-inspection" },
 ];
 
 export default function Header() {
@@ -42,12 +43,12 @@ export default function Header() {
           </span>
         </Link>
 
-        <nav className="ml-3.5 hidden gap-[26px] lg:flex">
+        <nav className="ml-3.5 hidden gap-[22px] lg:flex">
           {NAV.map((n) => (
             <Link
-              key={n.type}
-              href={`/properties?type=${n.type}`}
-              className="py-1.5 text-[14.5px] font-semibold text-[#3A3F32] transition-colors hover:text-brand"
+              key={n.href}
+              href={n.href}
+              className="whitespace-nowrap py-1.5 text-[14.5px] font-semibold text-[#3A3F32] transition-colors hover:text-brand"
             >
               {n.label}
             </Link>
@@ -99,8 +100,8 @@ export default function Header() {
           <nav className="container-site flex flex-col py-3">
             {NAV.map((n) => (
               <Link
-                key={n.type}
-                href={`/properties?type=${n.type}`}
+                key={n.href}
+                href={n.href}
                 onClick={() => setOpen(false)}
                 className="border-b border-line-soft py-3 text-[15px] font-semibold text-[#3A3F32]"
               >

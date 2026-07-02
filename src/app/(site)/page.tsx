@@ -2,6 +2,7 @@ import Link from "next/link";
 import Hero from "@/components/home/Hero";
 import ValueProps from "@/components/home/ValueProps";
 import CTASection from "@/components/home/CTASection";
+import InteriorDesignAd from "@/components/home/InteriorDesignAd";
 import PropertyCard from "@/components/PropertyCard";
 import { getFeatured } from "@/lib/queries";
 
@@ -48,6 +49,7 @@ export default async function HomePage() {
       </section>
 
       <ValueProps />
+      <InteriorDesignAd />
       <CTASection />
     </>
   );
