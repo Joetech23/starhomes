@@ -6,7 +6,10 @@ const SELECT =
   "id, listing_no, type, title, location, price, unit, featured, status, description, card_specs, features, fees, amenities, total_label, agent_id, created_at, listing_media(id, url, caption, is_cover, sort_order, kind), agents(name, title, phone, email, avatar_url, verified)";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-function mapMedia(rows: any[] | null | undefined, kind: "photo" | "document"): MediaItem[] {
+function mapMedia(
+  rows: any[] | null | undefined,
+  kind: "photo" | "document" | "video"
+): MediaItem[] {
   return (rows ?? [])
     .filter((m) => (m.kind ?? "photo") === kind)
     .map((m) => ({
@@ -49,6 +52,7 @@ function mapRow(row: any): Listing {
     totalLabel: row.total_label ?? "Total payable",
     photos: mapMedia(row.listing_media, "photo"),
     documents: mapMedia(row.listing_media, "document"),
+    videos: mapMedia(row.listing_media, "video"),
     agent,
     agentId: row.agent_id ?? null,
   };

@@ -8,7 +8,7 @@ interface Media {
   id: string;
   url: string;
   storage_path: string | null;
-  kind: "photo" | "document";
+  kind: "photo" | "document" | "video";
   caption: string | null;
   is_cover: boolean;
   sort_order: number;
@@ -21,6 +21,8 @@ export default function MediaManager({ listingId }: { listingId: string }) {
   const [media, setMedia] = useState<Media[]>([]);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [videoUrl, setVideoUrl] = useState("");
+  const [videoCaption, setVideoCaption] = useState("");
   const photoInput = useRef<HTMLInputElement>(null);
   const docInput = useRef<HTMLInputElement>(null);
 
@@ -74,6 +76,26 @@ export default function MediaManager({ listingId }: { listingId: string }) {
     }
   }
 
+  async function addVideo() {
+    const link = videoUrl.trim();
+    if (!link) return;
+    setBusy(true);
+    setErr(null);
+    const count = media.filter((m) => m.kind === "video").length;
+    const { error } = await supabase.from("listing_media").insert({
+      listing_id: listingId,
+      url: link,
+      kind: "video",
+      caption: videoCaption.trim() || null,
+      sort_order: count,
+    });
+    if (error) setErr(error.message);
+    setVideoUrl("");
+    setVideoCaption("");
+    await load();
+    setBusy(false);
+  }
+
   async function makeCover(item: Media) {
     setBusy(true);
     await supabase
@@ -104,6 +126,7 @@ export default function MediaManager({ listingId }: { listingId: string }) {
 
   const photos = media.filter((m) => m.kind === "photo");
   const docs = media.filter((m) => m.kind === "document");
+  const vids = media.filter((m) => m.kind === "video");
 
   return (
     <div className="flex flex-col gap-6">
@@ -165,6 +188,77 @@ export default function MediaManager({ listingId }: { listingId: string }) {
                     Delete
                   </button>
                 </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Video tour (9:16 embeds) */}
+      <section className="rounded-[16px] border border-line bg-white p-5">
+        <h2 className="m-0 mb-1 font-display text-[17px] font-extrabold text-ink-900">
+          Video tour
+        </h2>
+        <p className="m-0 mb-4 text-[12.5px] text-muted">
+          Paste a share/embed link (Cloudinary, Google Drive, YouTube, Vimeo, or a
+          direct .mp4). Best with vertical 9:16 clips — they appear in the
+          interactive tour on the listing page.
+        </p>
+        <div className="flex flex-col gap-2.5 sm:flex-row">
+          <input
+            placeholder="Video link (e.g. https://drive.google.com/file/d/…/view)"
+            value={videoUrl}
+            onChange={(e) => setVideoUrl(e.target.value)}
+            className="w-full flex-[2] rounded-[11px] border border-line-input bg-white px-3.5 py-2.5 text-[14px] text-ink outline-none focus:border-brand"
+          />
+          <input
+            placeholder="Label (optional)"
+            value={videoCaption}
+            onChange={(e) => setVideoCaption(e.target.value)}
+            className="w-full flex-1 rounded-[11px] border border-line-input bg-white px-3.5 py-2.5 text-[14px] text-ink outline-none focus:border-brand"
+          />
+          <button
+            type="button"
+            disabled={busy || !videoUrl.trim()}
+            onClick={addVideo}
+            className="flex-none rounded-full bg-brand px-5 py-2.5 text-[13px] font-bold text-white transition-colors hover:bg-brand-hover disabled:opacity-50"
+          >
+            Add video
+          </button>
+        </div>
+        {vids.length > 0 && (
+          <div className="mt-4 flex flex-col gap-2">
+            {vids.map((v, i) => (
+              <div
+                key={v.id}
+                className="flex items-center gap-3 rounded-[10px] border border-line px-3 py-2"
+              >
+                <span className="flex h-7 w-7 flex-none items-center justify-center rounded-[8px] bg-leaf-bg text-[12px] font-extrabold text-brand">
+                  {i + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-[13px] font-semibold text-ink">
+                    {v.caption || `Clip ${i + 1}`}
+                  </div>
+                  <div className="truncate text-[11.5px] text-muted-light">
+                    {v.url}
+                  </div>
+                </div>
+                <a
+                  href={v.url}
+                  target="_blank"
+                  rel="noopener"
+                  className="text-[11.5px] font-bold text-brand"
+                >
+                  Open
+                </a>
+                <button
+                  type="button"
+                  onClick={() => remove(v)}
+                  className="text-[11.5px] font-bold text-red-600"
+                >
+                  Delete
+                </button>
               </div>
             ))}
           </div>

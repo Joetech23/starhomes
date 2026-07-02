@@ -2,6 +2,8 @@
 // Data now comes from Supabase (see lib/queries.ts); this file holds the shared
 // shape, label maps, and content fallbacks ported from the original design.
 
+import { naira } from "./site";
+
 export type PropertyType = "rent" | "sale" | "land" | "shortlet" | "commercial";
 
 export interface MediaItem {
@@ -39,6 +41,7 @@ export interface Listing {
   totalLabel: string;
   photos: MediaItem[];
   documents: MediaItem[];
+  videos: MediaItem[];
   agent: Agent | null;
   agentId: string | null;
 }
@@ -120,6 +123,11 @@ export function descFor(l: Pick<Listing, "title" | "location" | "type">): [strin
     `Set in ${loc}, this ${l.title.toLowerCase()} blends comfortable, modern living with a secure and well-managed environment. Finished to a high standard and ready to move into.`,
     "All fees are stated upfront with no hidden charges. Our team handles inspection, documentation and handover from start to finish, so you can move in with complete confidence.",
   ];
+}
+
+/** Headline price, or "Price on request" when no price is set (price <= 0). */
+export function priceText(l: Pick<Listing, "price">): string {
+  return l.price > 0 ? naira(l.price) : "Price on request";
 }
 
 export function feeTotal(l: Listing): number {

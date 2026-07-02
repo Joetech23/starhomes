@@ -3,13 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import PropertyCard from "@/components/PropertyCard";
 import EnquiryForm from "@/components/EnquiryForm";
+import VideoTour from "@/components/VideoTour";
 import {
   TYPE_LABEL,
-  amenitiesFor,
   descFor,
   feeTotal,
   refOf,
   galleryPhotos,
+  priceText,
 } from "@/lib/properties";
 import { getListing, getSimilar } from "@/lib/queries";
 import { naira, wa, TEL_LINK, PHONE_DISPLAY, EMAIL } from "@/lib/site";
@@ -31,7 +32,7 @@ export default async function PropertyDetail({
   const photos = galleryPhotos(p);
   const main = photos[0];
   const side = photos.slice(1, 3);
-  const amenities = p.amenities.length ? p.amenities : amenitiesFor(p.type);
+  const amenities = p.amenities;
   const paragraphs = p.description
     ? p.description.split("\n\n").filter(Boolean)
     : descFor(p);
@@ -92,6 +93,9 @@ export default async function PropertyDetail({
         ))}
       </div>
 
+      {/* Interactive 9:16 video tour */}
+      {p.videos.length > 0 && <VideoTour videos={p.videos} />}
+
       <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[1.65fr_1fr]">
         {/* Main column */}
         <div>
@@ -112,7 +116,7 @@ export default async function PropertyDetail({
           </div>
           <div className="mb-[26px] flex items-baseline gap-[7px] border-b border-[#EAEDE3] pb-[26px]">
             <span className="font-display text-[32px] font-extrabold tracking-[-0.02em] text-brand sm:text-[38px]">
-              {naira(p.price)}
+              {priceText(p)}
             </span>
             {p.unit && (
               <span className="text-[16px] font-semibold text-muted-light">
@@ -152,22 +156,26 @@ export default async function PropertyDetail({
             </p>
           ))}
 
-          <h3 className="m-0 mb-4 font-display text-[20px] font-bold text-[#13160F]">
-            Features &amp; amenities
-          </h3>
-          <div className="mb-[38px] grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
-            {amenities.map((a) => (
-              <div
-                key={a}
-                className="flex items-center gap-[11px] text-[14.5px] font-medium text-[#3A3F32]"
-              >
-                <span className="flex h-[22px] w-[22px] flex-none items-center justify-center rounded-[7px] bg-leaf-bg text-[12px] font-extrabold text-brand">
-                  ✓
-                </span>
-                {a}
+          {amenities.length > 0 && (
+            <>
+              <h3 className="m-0 mb-4 font-display text-[20px] font-bold text-[#13160F]">
+                Features &amp; amenities
+              </h3>
+              <div className="mb-[38px] grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
+                {amenities.map((a) => (
+                  <div
+                    key={a}
+                    className="flex items-center gap-[11px] text-[14.5px] font-medium text-[#3A3F32]"
+                  >
+                    <span className="flex h-[22px] w-[22px] flex-none items-center justify-center rounded-[7px] bg-leaf-bg text-[12px] font-extrabold text-brand">
+                      ✓
+                    </span>
+                    {a}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
 
           {/* Documentation gallery (public) */}
           {p.documents.length > 0 && (
