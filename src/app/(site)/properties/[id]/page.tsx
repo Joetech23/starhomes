@@ -17,8 +17,7 @@ import { naira, wa, TEL_LINK, PHONE_DISPLAY, EMAIL } from "@/lib/site";
 
 export const revalidate = 60;
 
-const AVATAR_FALLBACK =
-  "https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&fit=crop&w=200&q=80";
+const AVATAR_FALLBACK = "/logo-mark.png";
 
 export default async function PropertyDetail({
   params,
@@ -47,6 +46,8 @@ export default async function PropertyDetail({
     avatarUrl: AVATAR_FALLBACK,
     verified: true,
   };
+  const avatarSrc = agent.avatarUrl ?? AVATAR_FALLBACK;
+  const avatarIsLogo = avatarSrc === AVATAR_FALLBACK;
 
   const enquireMsg = `Hello Star Homes, I’m interested in ${p.title} (Ref ${ref}) in ${p.location}, listed at ${naira(p.price)}${p.unit || ""}. Is it still available?`;
   const waLink = wa(enquireMsg);
@@ -274,13 +275,17 @@ export default async function PropertyDetail({
         <div className="lg:sticky lg:top-24">
           <div className="rounded-[20px] border border-line bg-white p-6 shadow-[0_26px_50px_-34px_rgba(22,26,18,0.3)]">
             <div className="mb-5 flex items-center gap-[13px] border-b border-line-soft pb-5">
-              <div className="relative h-[54px] w-[54px] flex-none overflow-hidden rounded-full bg-[#F6F8F1]">
+              <div
+                className={`relative h-[54px] w-[54px] flex-none overflow-hidden rounded-full ${
+                  avatarIsLogo ? "border border-line bg-leaf-bg" : "bg-[#F6F8F1]"
+                }`}
+              >
                 <Image
-                  src={agent.avatarUrl ?? AVATAR_FALLBACK}
+                  src={avatarSrc}
                   alt={agent.name}
                   fill
                   sizes="54px"
-                  className="object-cover"
+                  className={avatarIsLogo ? "object-contain p-1.5" : "object-cover"}
                 />
               </div>
               <div className="leading-[1.3]">
