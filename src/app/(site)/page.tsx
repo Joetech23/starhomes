@@ -3,6 +3,7 @@ import Hero from "@/components/home/Hero";
 import ValueProps from "@/components/home/ValueProps";
 import CTASection from "@/components/home/CTASection";
 import InteriorDesignAd from "@/components/home/InteriorDesignAd";
+import CACTrust from "@/components/home/CACTrust";
 import PropertyCard from "@/components/PropertyCard";
 import { getFeatured } from "@/lib/queries";
 
@@ -14,6 +15,7 @@ export default async function HomePage() {
   return (
     <>
       <Hero />
+      <CACTrust />
 
       {/* Featured properties */}
       <section className="container-site py-14 pb-16">

@@ -63,6 +63,23 @@ export const FILTER_LABEL_PLURAL: Record<string, string> = {
   commercial: "Commercial",
 };
 
+/** Hero/listings location filter options — label shown to the user, keyword matched (case-insensitive, substring) against listing.location. */
+export const LOCATIONS: { label: string; keyword: string }[] = [
+  { label: "Awka, Anambra", keyword: "Awka" },
+  { label: "Onitsha, Anambra", keyword: "Onitsha" },
+  { label: "Nnewi, Anambra", keyword: "Nnewi" },
+  { label: "Lagos", keyword: "Lagos" },
+  { label: "Enugu", keyword: "Enugu" },
+  { label: "Abuja", keyword: "Abuja" },
+];
+
+export const BUDGET_OPTIONS: { value: string; label: string }[] = [
+  { value: "u5", label: "Under ₦5M" },
+  { value: "5to50", label: "₦5M – ₦50M" },
+  { value: "50to200", label: "₦50M – ₦200M" },
+  { value: "200plus", label: "₦200M+" },
+];
+
 export const FALLBACK_HERO =
   "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1400&q=80";
 

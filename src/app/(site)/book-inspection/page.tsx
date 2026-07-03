@@ -1,10 +1,23 @@
 import type { Metadata } from "next";
 import InspectionForm from "@/components/InspectionForm";
+import { DEFAULT_OG_IMAGE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Book a Property Inspection — Star Homes & Properties",
   description:
     "Register your property preferences and book an inspection with Star Homes & Properties across Awka, Anambra and Nigeria at large.",
+  alternates: { canonical: "/book-inspection" },
+  openGraph: {
+    title: "Book a Property Inspection — Star Homes & Properties",
+    description:
+      "Tell us what you're looking for and we'll match you to the right home, land or shortlet — then arrange an inspection.",
+    url: "/book-inspection",
+    images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: "Star Homes & Properties" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: [DEFAULT_OG_IMAGE],
+  },
 };
 
 export default function BookInspectionPage() {

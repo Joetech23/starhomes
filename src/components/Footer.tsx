@@ -7,6 +7,8 @@ import {
   PHONE_DISPLAY,
   EMAIL,
   LOCATIONS_LINE,
+  BUSINESS_NAME,
+  CAC_RN,
 } from "@/lib/site";
 
 const EXPLORE = [
@@ -41,10 +43,13 @@ export default function Footer() {
                 </span>
               </span>
             </div>
-            <p className="m-0 max-w-[300px] text-[14px] leading-[1.65] text-[#9aa08c]">
+            <p className="m-0 mb-3 max-w-[300px] text-[14px] leading-[1.65] text-[#9aa08c]">
               Your trusted partner for renting, buying and investing in property
               across Anambra and Nigeria at large.
             </p>
+            <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-[#2a3020] bg-white/5 px-2.5 py-1 text-[11px] font-bold text-[#B7BCAD]">
+              CAC Registered · {BUSINESS_NAME} · RN {CAC_RN}
+            </div>
           </div>
 
           <div>

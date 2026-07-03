@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { TEL_LINK, PHONE_DISPLAY, WA_GENERAL } from "@/lib/site";
+import { TEL_LINK, PHONE_DISPLAY, WA_GENERAL, CAC_RN } from "@/lib/site";
 
 const NAV: { label: string; href: string }[] = [
   { label: "Sale", href: "/properties?type=sale" },
@@ -42,6 +42,16 @@ export default function Header() {
             </span>
           </span>
         </Link>
+
+        <span
+          title="Registered with the Corporate Affairs Commission (CAC), Nigeria"
+          className="hidden items-center gap-1.5 whitespace-nowrap rounded-full border border-leaf-border bg-leaf-bg px-2.5 py-1 text-[11px] font-bold text-brand-ink md:inline-flex"
+        >
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          CAC RN: {CAC_RN}
+        </span>
 
         <nav className="ml-3.5 hidden gap-[22px] lg:flex">
           {NAV.map((n) => (
@@ -98,6 +108,12 @@ export default function Header() {
       {open && (
         <div className="border-t border-line bg-white lg:hidden">
           <nav className="container-site flex flex-col py-3">
+            <span className="mb-3 inline-flex w-fit items-center gap-1.5 rounded-full border border-leaf-border bg-leaf-bg px-2.5 py-1 text-[11px] font-bold text-brand-ink md:hidden">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              CAC RN: {CAC_RN}
+            </span>
             {NAV.map((n) => (
               <Link
                 key={n.href}

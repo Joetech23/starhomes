@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PropertyCard from "@/components/PropertyCard";
 import EnquiryForm from "@/components/EnquiryForm";
@@ -11,13 +12,50 @@ import {
   refOf,
   galleryPhotos,
   priceText,
+  coverPhoto,
 } from "@/lib/properties";
 import { getListing, getSimilar } from "@/lib/queries";
-import { naira, wa, TEL_LINK, PHONE_DISPLAY, EMAIL } from "@/lib/site";
+import { naira, wa, TEL_LINK, PHONE_DISPLAY, EMAIL, SITE_URL } from "@/lib/site";
 
 export const revalidate = 60;
 
 const AVATAR_FALLBACK = "/logo-mark.png";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const p = await getListing(params.id);
+  if (!p) return { title: "Property not found" };
+
+  const price = priceText(p);
+  const title = `${p.title} — ${price}${p.unit || ""} in ${p.location}`;
+  const rawDesc = p.description ?? descFor(p).join(" ");
+  const description =
+    rawDesc.length > 155 ? rawDesc.slice(0, 152).trimEnd() + "…" : rawDesc;
+  const cover = coverPhoto(p);
+  const url = `/properties/${p.id}`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title,
+      description,
+      url,
+      type: "website",
+      images: [{ url: cover, width: 1200, height: 800, alt: p.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [cover],
+    },
+  };
+}
 
 export default async function PropertyDetail({
   params,
@@ -55,8 +93,53 @@ export default async function PropertyDetail({
     `Enquiry: ${p.title} (${ref})`
   )}&body=${encodeURIComponent(enquireMsg)}`;
 
+  const listingJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateListing",
+    name: p.title,
+    url: `${SITE_URL}/properties/${p.id}`,
+    description: p.description ?? descFor(p).join(" "),
+    image: galleryPhotos(p).map((m) => m.url),
+    identifier: ref,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: p.location,
+      addressRegion: "Anambra",
+      addressCountry: "NG",
+    },
+    ...(p.price > 0 && {
+      offers: {
+        "@type": "Offer",
+        price: p.price,
+        priceCurrency: "NGN",
+        availability: "https://schema.org/InStock",
+        url: `${SITE_URL}/properties/${p.id}`,
+      },
+    }),
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: "Properties", item: `${SITE_URL}/properties` },
+      { "@type": "ListItem", position: 3, name: p.title, item: `${SITE_URL}/properties/${p.id}` },
+    ],
+  };
+
   return (
     <section className="container-site py-[30px] pb-[70px]">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(listingJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <Link
         href="/properties"
         className="mb-5 inline-block text-[13.5px] font-semibold text-muted transition-colors hover:text-brand"

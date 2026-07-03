@@ -3,6 +3,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getAdmin } from "@/lib/admin";
 import AdminNav from "@/components/admin/AdminNav";
+import AdminMobileNav from "@/components/admin/AdminMobileNav";
 import SignOutButton from "@/components/admin/SignOutButton";
 
 export const dynamic = "force-dynamic";
@@ -53,13 +54,8 @@ export default async function DashboardLayout({
       </aside>
 
       <div className="flex-1">
-        {/* mobile top bar */}
-        <div className="flex items-center justify-between border-b border-line bg-white px-5 py-3 md:hidden">
-          <span className="font-display text-[15px] font-extrabold text-ink">
-            STAR HOMES <span className="text-brand">ADMIN</span>
-          </span>
-          <SignOutButton />
-        </div>
+        {/* mobile top bar + nav */}
+        <AdminMobileNav />
         <div className="mx-auto max-w-[1100px] p-5 sm:p-8">{children}</div>
       </div>
     </div>

@@ -4,14 +4,28 @@ import type { Metadata } from "next";
 import EnquiryForm from "@/components/EnquiryForm";
 import { wa, TEL_LINK, PHONE_DISPLAY } from "@/lib/site";
 
+const HERO =
+  "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1400&q=80";
+const HERO_OG =
+  "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&h=630&q=80";
+
 export const metadata: Metadata = {
   title: "Interior Design — Star Homes & Properties",
   description:
     "Star Homes Interiors: space planning, furnishing, POP & lighting, renovation and full styling for homes, duplexes and shortlets across Anambra and Nigeria.",
+  alternates: { canonical: "/interior-design" },
+  openGraph: {
+    title: "Star Homes Interiors — Interior Design in Anambra & Nigeria",
+    description:
+      "Space planning, furnishing, POP & lighting, renovation and full styling for homes, duplexes and shortlets.",
+    url: "/interior-design",
+    images: [{ url: HERO_OG, width: 1200, height: 630, alt: "Star Homes Interiors" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: [HERO_OG],
+  },
 };
-
-const HERO =
-  "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1400&q=80";
 
 const SERVICES = [
   {

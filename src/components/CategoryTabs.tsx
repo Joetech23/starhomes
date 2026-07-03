@@ -11,8 +11,25 @@ const CATS: [string, string][] = [
   ["commercial", "Commercial"],
 ];
 
-export default function CategoryTabs({ active }: { active: string }) {
+export default function CategoryTabs({
+  active,
+  location,
+  budget,
+}: {
+  active: string;
+  location?: string;
+  budget?: string;
+}) {
   const router = useRouter();
+
+  const hrefFor = (key: string) => {
+    const params = new URLSearchParams();
+    if (key !== "all") params.set("type", key);
+    if (location) params.set("location", location);
+    if (budget) params.set("budget", budget);
+    const qs = params.toString();
+    return qs ? `/properties?${qs}` : "/properties";
+  };
 
   return (
     <div className="mb-7 flex flex-wrap gap-[9px]">
@@ -22,9 +39,7 @@ export default function CategoryTabs({ active }: { active: string }) {
           <button
             key={key}
             type="button"
-            onClick={() =>
-              router.push(key === "all" ? "/properties" : `/properties?type=${key}`)
-            }
+            onClick={() => router.push(hrefFor(key))}
             className={`rounded-full border px-[17px] py-[9px] text-[13.5px] font-semibold transition-colors ${
               isActive
                 ? "border-ink bg-ink text-white"

@@ -82,6 +82,44 @@ export async function getByType(filter: string): Promise<Listing[]> {
   return (data ?? []).map(mapRow);
 }
 
+/**
+ * value -> [min, max) naira range used by the hero/listings budget filter.
+ * Lower bounds are inclusive and start at 1 (never 0) so "price on request"
+ * listings (price = 0) never match a specific budget filter.
+ */
+export const BUDGET_RANGES: Record<string, [number, number | null]> = {
+  u5: [1, 5_000_000],
+  "5to50": [5_000_000, 50_000_000],
+  "50to200": [50_000_000, 200_000_000],
+  "200plus": [200_000_000, null],
+};
+
+export interface ListingFilters {
+  type?: string; // "all" | PropertyType
+  location?: string; // substring matched against the location column
+  budget?: string; // key into BUDGET_RANGES
+}
+
+export async function getFiltered(filters: ListingFilters): Promise<Listing[]> {
+  const supabase = createClient();
+  let query = supabase
+    .from("listings")
+    .select(SELECT)
+    .eq("status", "published")
+    .order("created_at", { ascending: true });
+
+  if (filters.type && filters.type !== "all") query = query.eq("type", filters.type);
+  if (filters.location) query = query.ilike("location", `%${filters.location}%`);
+  const range = filters.budget ? BUDGET_RANGES[filters.budget] : undefined;
+  if (range) {
+    query = query.gte("price", range[0]);
+    if (range[1] != null) query = query.lt("price", range[1]);
+  }
+
+  const { data } = await query;
+  return (data ?? []).map(mapRow);
+}
+
 export async function getListing(id: string): Promise<Listing | null> {
   const supabase = createClient();
   const { data } = await supabase.from("listings").select(SELECT).eq("id", id).single();
