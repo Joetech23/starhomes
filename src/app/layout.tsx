@@ -1,7 +1,14 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Manrope, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import { SITE_URL, DEFAULT_OG_IMAGE } from "@/lib/site";
+import PWARegister from "@/components/PWARegister";
+
+export const viewport: Viewport = {
+  themeColor: "#5B9A24",
+  width: "device-width",
+  initialScale: 1,
+};
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -20,9 +27,9 @@ const bricolage = Bricolage_Grotesque({
 const OG_IMAGE = DEFAULT_OG_IMAGE;
 
 const DEFAULT_TITLE =
-  "Star Homes & Properties — Rent, Buy & Invest in Anambra & Nigeria";
+  "Star Homes & Properties — Property, Interiors & Wears Marketplace in Nigeria";
 const DEFAULT_DESCRIPTION =
-  "Star Homes & Properties helps you rent, buy and invest with confidence in Awka, Anambra and across Nigeria — verified homes, land, shortlets and commercial space, transparent fees and CAC-registered trusted agents.";
+  "Star Homes & Properties is your one-stop marketplace in Awka, Anambra & across Nigeria — rent or buy property, shop furniture & home interiors, and browse fashion wears. Verified, transparent, CAC-registered. Gadgets coming soon.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -32,26 +39,41 @@ export const metadata: Metadata = {
   },
   description: DEFAULT_DESCRIPTION,
   applicationName: "Star Homes & Properties",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "Star Homes",
+    statusBarStyle: "default",
+  },
   keywords: [
     "houses for rent in Awka",
     "land for sale in Anambra",
     "Awka real estate",
     "Anambra property",
     "shortlet apartments Awka",
+    "buy furniture in Awka",
+    "home interiors Anambra",
+    "furniture store Nigeria",
+    "fashion store Nigeria",
+    "buy clothes online Nigeria",
+    "Ankara dresses Nigeria",
+    "kaftan senator wear Nigeria",
+    "online marketplace Anambra",
     "Star Homes and Properties",
-    "property agent Awka Anambra",
-    "houses for rent Nigeria",
-    "land for sale Nigeria",
-    "CAC registered real estate agency",
+    "CAC registered business Nigeria",
   ],
   authors: [{ name: "Star Homes & Properties" }],
   creator: "Star Homes & Properties",
   publisher: "Star Homes & Properties",
-  category: "Real Estate",
+  category: "Marketplace",
   icons: {
-    icon: "/logo-mark.png",
+    icon: [
+      { url: "/logo-mark.png" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
     shortcut: "/logo-mark.png",
-    apple: "/logo-mark.png",
+    apple: "/icons/apple-touch-icon.png",
   },
   alternates: { canonical: "/" },
   robots: {
@@ -89,7 +111,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${manrope.variable} ${bricolage.variable}`}>
-      <body className="font-sans text-ink antialiased">{children}</body>
+      <body className="font-sans text-ink antialiased">
+        {children}
+        <PWARegister />
+      </body>
     </html>
   );
 }

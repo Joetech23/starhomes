@@ -1,7 +1,7 @@
 // Central site / contact configuration for Star Homes & Properties.
 
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL || "https://starhomes-eta.vercel.app"
+  process.env.NEXT_PUBLIC_SITE_URL || "https://starhomes.com.ng"
 ).replace(/\/$/, "");
 
 export const PHONE = "2349060971584";

@@ -9,17 +9,21 @@ async function counts() {
   const supabase = createClient();
   const base = () =>
     supabase.from("listings").select("*", { count: "exact", head: true });
-  const [total, published, drafts, enquiries] = await Promise.all([
+  const [total, published, products, enquiries, inspections, subscribers] = await Promise.all([
     base(),
     base().eq("status", "published"),
-    base().eq("status", "draft"),
+    supabase.from("products").select("*", { count: "exact", head: true }).eq("status", "published"),
     supabase.from("enquiries").select("*", { count: "exact", head: true }),
+    supabase.from("inspection_requests").select("*", { count: "exact", head: true }),
+    supabase.from("subscribers").select("*", { count: "exact", head: true }),
   ]);
   return {
     total: total.count ?? 0,
     published: published.count ?? 0,
-    drafts: drafts.count ?? 0,
+    products: products.count ?? 0,
     enquiries: enquiries.count ?? 0,
+    inspections: inspections.count ?? 0,
+    subscribers: subscribers.count ?? 0,
   };
 }
 
@@ -38,10 +42,12 @@ export default async function AdminDashboard() {
     .limit(5);
 
   const cards = [
-    { label: "Total listings", value: c.total },
-    { label: "Published", value: c.published },
-    { label: "Drafts", value: c.drafts },
+    { label: "Listings", value: c.total },
+    { label: "Products", value: c.products },
     { label: "Enquiries", value: c.enquiries },
+    { label: "Inspections", value: c.inspections },
+    { label: "Subscribers", value: c.subscribers },
+    { label: "Published listings", value: c.published },
   ];
 
   return (
@@ -58,7 +64,7 @@ export default async function AdminDashboard() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
         {cards.map((card) => (
           <div
             key={card.label}

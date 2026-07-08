@@ -11,14 +11,14 @@ import {
   CAC_RN,
 } from "@/lib/site";
 
-const EXPLORE = [
-  { label: "For Sale", type: "sale" },
-  { label: "For Rent", type: "rent" },
-  { label: "Land & Plots", type: "land" },
-  { label: "Shortlets", type: "shortlet" },
+const EXPLORE: { label: string; href: string }[] = [
+  { label: "Property", href: "/properties" },
+  { label: "Interiors", href: "/shop/interiors" },
+  { label: "Wears", href: "/shop/wears" },
+  { label: "Gadgets (soon)", href: "/shop/gadgets" },
+  { label: "Interior Design", href: "/interior-design" },
+  { label: "Book Inspection", href: "/book-inspection" },
 ];
-
-const COMPANY = ["About us", "List your property", "Property management", "FAQs"];
 
 export default function Footer() {
   return (
@@ -59,8 +59,8 @@ export default function Footer() {
             <div className="flex flex-col gap-[11px]">
               {EXPLORE.map((e) => (
                 <Link
-                  key={e.type}
-                  href={`/properties?type=${e.type}`}
+                  key={e.href}
+                  href={e.href}
                   className="text-left text-[14px] text-[#cfd3c6] transition-colors hover:text-brand"
                 >
                   {e.label}
@@ -74,11 +74,18 @@ export default function Footer() {
               Company
             </div>
             <div className="flex flex-col gap-[11px]">
-              {COMPANY.map((c) => (
-                <span key={c} className="text-[14px] text-[#cfd3c6]">
-                  {c}
+              <Link href="/interior-design" className="text-[14px] text-[#cfd3c6] transition-colors hover:text-brand">
+                Interior design services
+              </Link>
+              <Link href="/shop" className="text-[14px] text-[#cfd3c6] transition-colors hover:text-brand">
+                Shop the marketplace
+              </Link>
+              <span className="inline-flex w-fit items-center gap-1.5 text-[14px] text-[#cfd3c6]">
+                Refer &amp; Earn
+                <span className="rounded-full bg-brand/20 px-1.5 py-0.5 text-[9.5px] font-bold text-brand">
+                  SOON
                 </span>
-              ))}
+              </span>
             </div>
           </div>
 
